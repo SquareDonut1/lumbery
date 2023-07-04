@@ -57,10 +57,14 @@ public class buildingManager : MonoBehaviour
 
                 placeObjectG(buildables[SelectedBuildable].prefab, hit.point);  
 
-            }  else if (Physics.Raycast(ray, out hit, 13f, objectLayer)) {
+            }  else if (Physics.Raycast(ray, out hit, 13f, objectLayer) && buildables[SelectedBuildable].prefab.name == "wall") {
 
                 placeObject(buildables[SelectedBuildable].prefab, hit.transform.position, hit.transform.rotation);
 
+            }  else if (Physics.Raycast(ray, out hit, 13f, objectLayer)) {
+
+                placeObject(buildables[SelectedBuildable].prefab, hit.transform.position, Quaternion.identity);
+          
             }
         }
 
@@ -76,14 +80,20 @@ public class buildingManager : MonoBehaviour
         //placing placHolder
         if (Physics.Raycast(ray, out hit, 13f, objectLayer)) {
 
-            if (hit.transform.CompareTag("colider")) {
+            if (hit.transform.CompareTag("colider") && buildables[SelectedBuildable].prefab.name == "wall") {
 
-                UpdatePlaceHolder(hit.transform.position, buildables[SelectedBuildable].placeHolder,hit.transform.rotation);
+                UpdatePlaceHolder(hit.transform.position, buildables[SelectedBuildable].placeHolder, hit.transform.rotation);
 
             } else if (hit.transform.CompareTag("ground") && buildables[SelectedBuildable].prefab.name == "platform") {
-             
-                UpdatePlaceHolder(hit.point, buildables[SelectedBuildable].placeHolder,Quaternion.identity);
+
+                UpdatePlaceHolder(hit.point, buildables[SelectedBuildable].placeHolder, Quaternion.identity);
+           
+            } else if (hit.transform.CompareTag("colider")) {
+
+                UpdatePlaceHolder(hit.transform.position, buildables[SelectedBuildable].placeHolder, Quaternion.identity);
+
             }
+
 
             if (lastSelectedBuildable != SelectedBuildable) {
 
