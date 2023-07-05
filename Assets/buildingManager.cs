@@ -4,17 +4,17 @@ using UnityEngine;
 
 public class buildingManager : MonoBehaviour
 {
-
+    public int Reach;
     public Buildables[] buildables;
     GameObject PlaceHolder;
     public int SelectedBuildable = 0;
     int lastSelectedBuildable = 0;
-
+    public bool isColiding = false;
+    Collider[] c;
     public LayerMask objectLayer;
     public LayerMask deleteLayer;
 
     public Dictionary<Vector3,GameObject> placedPrefabs = new Dictionary<Vector3, GameObject>();
-
 
 
     // Update is called once per frame
@@ -27,7 +27,6 @@ public class buildingManager : MonoBehaviour
         GetImputs();
                           
     }
-    public float angle;
     public void GetImputs() {
 
 
@@ -35,8 +34,7 @@ public class buildingManager : MonoBehaviour
 
         RaycastHit hit;
 
-
-            if (Input.GetKeyDown(KeyCode.Alpha1))
+        if (Input.GetKeyDown(KeyCode.Alpha1))
             SelectedBuildable = 0;
 
         if (Input.GetKeyDown(KeyCode.Alpha2))
@@ -45,84 +43,68 @@ public class buildingManager : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.Alpha3))
             SelectedBuildable = 2;
 
-      
+        if (Input.GetMouseButtonDown(0) && !isColiding) {                                                
 
-
-        // placeHolder.SetActive(false);
-        
-
-        if (Input.GetMouseButtonDown(0) && !isColiding) {
-
-            if (Physics.Raycast(ray, out hit, 13f) && hit.transform.CompareTag("ground")) {
+            if (Physics.Raycast(ray, out hit, Reach) && hit.transform.CompareTag("ground")) {
 
                 placeObjectG(buildables[SelectedBuildable].prefab, hit.point);  
 
-            }  else if (Physics.Raycast(ray, out hit, 13f, objectLayer) && buildables[SelectedBuildable].prefab.name == "wall") {
+            }  else if (Physics.Raycast(ray, out hit, Reach, objectLayer) && buildables[SelectedBuildable].prefab.name == "wall") {
 
                 placeObject(buildables[SelectedBuildable].prefab, hit.transform.position, hit.transform.rotation);
 
-            }  else if (Physics.Raycast(ray, out hit, 13f, objectLayer)) {
+            }  else if (Physics.Raycast(ray, out hit, Reach, objectLayer)) {
 
                 placeObject(buildables[SelectedBuildable].prefab, hit.transform.position, Quaternion.identity);
           
-            }
+            }      
         }
 
 
         if (Input.GetMouseButtonDown(1)){
       
-            if (Physics.Raycast(ray, out hit, 13f,deleteLayer)) {
+            if (Physics.Raycast(ray, out hit, Reach, deleteLayer)) {
                 deleteObject(hit.transform.gameObject);
             }
         }
 
 
-        //placing placHolder
-        if (Physics.Raycast(ray, out hit, 13f, objectLayer)) {
+        if (lastSelectedBuildable != SelectedBuildable) {
 
+            Destroy(PlaceHolder);
+            print("deleted");
+        }
+
+
+        //placing placHolder
+        if (Physics.Raycast(ray, out hit, Reach, objectLayer)) {
+                   
             if (hit.transform.CompareTag("colider") && buildables[SelectedBuildable].prefab.name == "wall") {
 
                 UpdatePlaceHolder(hit.transform.position, buildables[SelectedBuildable].placeHolder, hit.transform.rotation);
 
-            } else if (hit.transform.CompareTag("ground") && buildables[SelectedBuildable].prefab.name == "platform") {
-
-                UpdatePlaceHolder(hit.point, buildables[SelectedBuildable].placeHolder, Quaternion.identity);
-           
             } else if (hit.transform.CompareTag("colider")) {
 
                 UpdatePlaceHolder(hit.transform.position, buildables[SelectedBuildable].placeHolder, Quaternion.identity);
 
-            }
+            }    
 
-
-            if (lastSelectedBuildable != SelectedBuildable) {
-
-              
-
-            }
-         
-        } else if (Physics.Raycast(ray, out hit, 13f)) {
+        } else if (Physics.Raycast(ray, out hit, Reach)) {
        
-            if (hit.transform.CompareTag("ground")) {
+            if (hit.transform.CompareTag("ground") && buildables[SelectedBuildable].canPlaceOnGround) {
          
                 UpdatePlaceHolder(hit.point, buildables[SelectedBuildable].placeHolder, Quaternion.identity);
 
-            }
+            }  
+            
+        } else {
+
+            Destroy(PlaceHolder);
+      
         }
 
-
-
         lastSelectedBuildable = SelectedBuildable;
-    }
 
-
-    public bool isColiding = false;
-    Collider[] c;
-    private void OnDrawGizmos() {
-        // Draw the box for visualization purposes
-        Gizmos.color = Color.yellow;
-        Gizmos.matrix = transform.localToWorldMatrix;
-        Gizmos.DrawWireCube(lol, buildables[SelectedBuildable].prefab.GetComponent<BoxCollider>().size * 1.9f);
     }
 
 
@@ -143,10 +125,9 @@ public class buildingManager : MonoBehaviour
 
 
     }
-    Vector3 lol;
     public void UpdatePlaceHolder(Vector3 pos,GameObject obj, Quaternion rot) {
        
-        lol = pos;
+      
         c = null;
 
         if (PlaceHolder != null) {
@@ -175,7 +156,7 @@ public class buildingManager : MonoBehaviour
 
             
                 if (col.CompareTag("placedObject")) {
-                    print("got here");
+                  
                     isColiding = true;
                 }
             }
@@ -193,38 +174,36 @@ public class buildingManager : MonoBehaviour
         
 
     }
-
     public void placeObjectG(GameObject obj, Vector3 pos) {
 
 
         GameObject temp = Instantiate(obj, RoundedPos(pos), Quaternion.identity, this.transform);
         placedPrefabs.Add(temp.transform.position, temp);
+        Destroy(PlaceHolder);
 
     }
-
     public void placeObject(GameObject obj, Vector3 pos , Quaternion rot) {
-
-     
-
+       
         if (placedPrefabs.ContainsKey(RoundedPos(pos))) {
-            print("object is there");                                       
+
             return;
         }
       
-
         GameObject temp = Instantiate(obj, RoundedPos(pos), rot, this.transform);
 
-        placedPrefabs.Add(temp.transform.position, temp);
+        placedPrefabs.Add(RoundedPos(temp.transform.position), temp);
+
+       
 
           foreach (GameObject j in temp.GetComponent<CheckColiders>().Coliders) {
-
+      
               if (placedPrefabs.ContainsKey(RoundedPos(j.transform.position))) {
-
                 placedPrefabs[RoundedPos(j.transform.position)].GetComponent<CheckColiders>().Check(temp,false);
                 temp.GetComponent<CheckColiders>().Check(j,false);
 
               }   
           }
+        Destroy(PlaceHolder);
     }
 
     public Vector3 RoundedPos(Vector3 pos) {
@@ -238,6 +217,7 @@ public class buildingManager : MonoBehaviour
 [System.Serializable]
 public class Buildables {
    
-   public GameObject prefab;
-   public GameObject placeHolder;
+    public GameObject prefab;
+    public GameObject placeHolder;
+    public bool canPlaceOnGround;
 }
