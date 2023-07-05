@@ -78,13 +78,16 @@ public class buildingManager : MonoBehaviour
 
         //placing placHolder
         if (Physics.Raycast(ray, out hit, Reach, objectLayer)) {
-                   
+
+            print("made it this far");
+
             if (hit.transform.CompareTag("colider") && buildables[SelectedBuildable].prefab.name == "wall") {
 
                 UpdatePlaceHolder(hit.transform.position, buildables[SelectedBuildable].placeHolder, hit.transform.rotation);
 
             } else if (hit.transform.CompareTag("colider")) {
 
+             
                 UpdatePlaceHolder(hit.transform.position, buildables[SelectedBuildable].placeHolder, Quaternion.identity);
 
             }    
@@ -92,10 +95,14 @@ public class buildingManager : MonoBehaviour
         } else if (Physics.Raycast(ray, out hit, Reach)) {
        
             if (hit.transform.CompareTag("ground") && buildables[SelectedBuildable].canPlaceOnGround) {
-         
+             
                 UpdatePlaceHolder(hit.point, buildables[SelectedBuildable].placeHolder, Quaternion.identity);
 
-            }  
+            } else if ( !hit.transform.CompareTag("placedObject") && buildables[SelectedBuildable].canPlaceOnGround) {
+
+                UpdatePlaceHolder(hit.point, buildables[SelectedBuildable].placeHolder, Quaternion.identity);
+
+            }
             
         } else {
 
