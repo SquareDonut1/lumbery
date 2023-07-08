@@ -76,39 +76,39 @@ public class buildingManager : MonoBehaviour
             print("deleted");
         }
 
-        /*
+                       
+                                /*
+        //placing placeHolder
+        if (buildables[SelectedBuildable].prefab.name == "platform") {
+            if (Physics.Raycast(ray, out hit, Reach, objectLayer) && hit.transform.CompareTag("colider")) {
 
-//placing placeHolder
-if (buildables[SelectedBuildable].prefab.name == "platform") {
-if (Physics.Raycast(ray, out hit, Reach, objectLayer) && hit.transform.CompareTag("colider")) {
+                UpdatePlaceHolder(hit.transform.position, buildables[SelectedBuildable].placeHolder, Quaternion.identity);
 
-UpdatePlaceHolder(hit.transform.position, buildables[SelectedBuildable].placeHolder, Quaternion.identity);
-
-}
-
-
-
-if (hit.transform.CompareTag("ground")) {
-
-UpdatePlaceHolder(hit.transform.position, buildables[SelectedBuildable].placeHolder, Quaternion.identity);
-
-}
-} else if (buildables[SelectedBuildable].prefab.name == "piller") {
-if (Physics.Raycast(ray, out hit, Reach, objectLayer)) {
+            }
 
 
 
-}
-} else if (buildables[SelectedBuildable].prefab.name == "wall") {
-if (Physics.Raycast(ray, out hit, Reach, objectLayer) && hit.transform.CompareTag("colider")) {
+            if (hit.transform.CompareTag("ground")) {
 
-UpdatePlaceHolder(hit.transform.position, buildables[SelectedBuildable].placeHolder, hit.transform.rotation);
+                UpdatePlaceHolder(hit.transform.position, buildables[SelectedBuildable].placeHolder, Quaternion.identity);
 
-}
-} 
-    */
+            }
+        } else if (buildables[SelectedBuildable].prefab.name == "piller") {
+            if (Physics.Raycast(ray, out hit, Reach, objectLayer)) {
 
 
+
+            }
+        } else if (buildables[SelectedBuildable].prefab.name == "wall") {
+            if (Physics.Raycast(ray, out hit, Reach, objectLayer) && hit.transform.CompareTag("colider")) {
+
+                UpdatePlaceHolder(hit.transform.position, buildables[SelectedBuildable].placeHolder, hit.transform.rotation);
+
+            }
+        }
+    
+                 
+                       */
 
 
         //placing placHolder
