@@ -21,8 +21,7 @@ public class buildingManager : MonoBehaviour
     // Update is called once per frame
     private void Update()
     {
-        int objectLayerint = LayerMask.NameToLayer(buildables[SelectedBuildable].prefab.name);
-        objectLayer = 1 << objectLayerint;
+  
 
 
         GetImputs();
@@ -32,7 +31,7 @@ public class buildingManager : MonoBehaviour
 
 
         ray = new Ray(Camera.main.transform.position, Camera.main.transform.forward);
-        Physics.Raycast(ray, out hit, Reach);
+       // Physics.Raycast(ray, out hit, Reach);
 
 
         if (Input.GetKeyDown(KeyCode.Alpha1))
@@ -43,6 +42,11 @@ public class buildingManager : MonoBehaviour
 
         if (Input.GetKeyDown(KeyCode.Alpha3))
             SelectedBuildable = 2;
+
+        int objectLayerint = LayerMask.NameToLayer(buildables[SelectedBuildable].prefab.name);
+        objectLayer = 1 << objectLayerint;
+
+
 
         if (Input.GetMouseButtonDown(0) && !isColiding) {
 
@@ -77,38 +81,46 @@ public class buildingManager : MonoBehaviour
         }
 
                        
-                                /*
+                                
         //placing placeHolder
         if (buildables[SelectedBuildable].prefab.name == "platform") {
+          
             if (Physics.Raycast(ray, out hit, Reach, objectLayer) && hit.transform.CompareTag("colider")) {
-
+                print("platform");
                 UpdatePlaceHolder(hit.transform.position, buildables[SelectedBuildable].placeHolder, Quaternion.identity);
 
-            }
-
-
-
-            if (hit.transform.CompareTag("ground")) {
-
-                UpdatePlaceHolder(hit.transform.position, buildables[SelectedBuildable].placeHolder, Quaternion.identity);
+            } else if (Physics.Raycast(ray, out hit, Reach) && hit.transform.CompareTag("ground")) {
+            
+                UpdatePlaceHolder(hit.point, buildables[SelectedBuildable].placeHolder, Quaternion.identity);
 
             }
         } else if (buildables[SelectedBuildable].prefab.name == "piller") {
-            if (Physics.Raycast(ray, out hit, Reach, objectLayer)) {
+        
+            if (Physics.Raycast(ray, out hit, Reach, objectLayer) && hit.transform.CompareTag("colider")) {
+                print("piler");
+                UpdatePlaceHolder(hit.transform.position, buildables[SelectedBuildable].placeHolder, Quaternion.identity);
 
+            } else if (Physics.Raycast(ray, out hit, Reach) && hit.transform.CompareTag("ground")) {
 
+                UpdatePlaceHolder(hit.point, buildables[SelectedBuildable].placeHolder, Quaternion.identity);
 
             }
         } else if (buildables[SelectedBuildable].prefab.name == "wall") {
+           
             if (Physics.Raycast(ray, out hit, Reach, objectLayer) && hit.transform.CompareTag("colider")) {
-
+                      print("wall");
                 UpdatePlaceHolder(hit.transform.position, buildables[SelectedBuildable].placeHolder, hit.transform.rotation);
 
             }
+        } else {
+
+            Destroy(PlaceHolder);
         }
+
+
     
                  
-                       */
+                       /*
 
 
         //placing placHolder
@@ -138,7 +150,7 @@ public class buildingManager : MonoBehaviour
 
             Destroy(PlaceHolder);
 
-        }
+        }             */
 
         lastSelectedBuildable = SelectedBuildable;
 
