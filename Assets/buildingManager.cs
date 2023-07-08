@@ -13,7 +13,8 @@ public class buildingManager : MonoBehaviour
     Collider[] c;
     public LayerMask objectLayer;
     public LayerMask deleteLayer;
-
+    RaycastHit hit;
+    Ray ray;
     public Dictionary<Vector3,GameObject> placedPrefabs = new Dictionary<Vector3, GameObject>();
 
 
@@ -30,9 +31,9 @@ public class buildingManager : MonoBehaviour
     public void GetImputs() {
 
 
-        Ray ray = new Ray(Camera.main.transform.position, Camera.main.transform.forward);
+        ray = new Ray(Camera.main.transform.position, Camera.main.transform.forward);
+        Physics.Raycast(ray, out hit, Reach);
 
-        RaycastHit hit;
 
         if (Input.GetKeyDown(KeyCode.Alpha1))
             SelectedBuildable = 0;
@@ -43,26 +44,26 @@ public class buildingManager : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.Alpha3))
             SelectedBuildable = 2;
 
-        if (Input.GetMouseButtonDown(0) && !isColiding) {                                                
+        if (Input.GetMouseButtonDown(0) && !isColiding) {
 
             if (Physics.Raycast(ray, out hit, Reach) && hit.transform.CompareTag("ground")) {
 
-                placeObjectG(buildables[SelectedBuildable].prefab, hit.point);  
+                placeObjectG(buildables[SelectedBuildable].prefab, hit.point);
 
-            }  else if (Physics.Raycast(ray, out hit, Reach, objectLayer) && buildables[SelectedBuildable].prefab.name == "wall") {
+            } else if (Physics.Raycast(ray, out hit, Reach, objectLayer) && buildables[SelectedBuildable].prefab.name == "wall") {
 
                 placeObject(buildables[SelectedBuildable].prefab, hit.transform.position, hit.transform.rotation);
 
-            }  else if (Physics.Raycast(ray, out hit, Reach, objectLayer)) {
+            } else if (Physics.Raycast(ray, out hit, Reach, objectLayer)) {
 
                 placeObject(buildables[SelectedBuildable].prefab, hit.transform.position, Quaternion.identity);
-          
-            }      
+
+            }
         }
 
 
-        if (Input.GetMouseButtonDown(1)){
-      
+        if (Input.GetMouseButtonDown(1)) {
+
             if (Physics.Raycast(ray, out hit, Reach, deleteLayer)) {
                 deleteObject(hit.transform.gameObject);
             }
@@ -75,11 +76,45 @@ public class buildingManager : MonoBehaviour
             print("deleted");
         }
 
+        /*
+
+//placing placeHolder
+if (buildables[SelectedBuildable].prefab.name == "platform") {
+if (Physics.Raycast(ray, out hit, Reach, objectLayer) && hit.transform.CompareTag("colider")) {
+
+UpdatePlaceHolder(hit.transform.position, buildables[SelectedBuildable].placeHolder, Quaternion.identity);
+
+}
+
+
+
+if (hit.transform.CompareTag("ground")) {
+
+UpdatePlaceHolder(hit.transform.position, buildables[SelectedBuildable].placeHolder, Quaternion.identity);
+
+}
+} else if (buildables[SelectedBuildable].prefab.name == "piller") {
+if (Physics.Raycast(ray, out hit, Reach, objectLayer)) {
+
+
+
+}
+} else if (buildables[SelectedBuildable].prefab.name == "wall") {
+if (Physics.Raycast(ray, out hit, Reach, objectLayer) && hit.transform.CompareTag("colider")) {
+
+UpdatePlaceHolder(hit.transform.position, buildables[SelectedBuildable].placeHolder, hit.transform.rotation);
+
+}
+} 
+    */
+
+
+
 
         //placing placHolder
         if (Physics.Raycast(ray, out hit, Reach, objectLayer)) {
-            
-            
+
+
 
             if (hit.transform.CompareTag("colider") && buildables[SelectedBuildable].prefab.name == "wall") {
 
@@ -89,20 +124,20 @@ public class buildingManager : MonoBehaviour
 
                 UpdatePlaceHolder(hit.transform.position, buildables[SelectedBuildable].placeHolder, Quaternion.identity);
 
-            }    
+            }
 
         } else if (Physics.Raycast(ray, out hit, Reach)) {
-       
+
             if (hit.transform.CompareTag("ground") && buildables[SelectedBuildable].canPlaceOnGround) {
-         
+
                 UpdatePlaceHolder(hit.point, buildables[SelectedBuildable].placeHolder, Quaternion.identity);
 
-            }  
-            
+            }
+
         } else {
 
             Destroy(PlaceHolder);
-      
+
         }
 
         lastSelectedBuildable = SelectedBuildable;
@@ -223,3 +258,4 @@ public class Buildables {
     public GameObject placeHolder;
     public bool canPlaceOnGround;
 }
+
