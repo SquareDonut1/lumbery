@@ -326,13 +326,13 @@ MonoBehaviour:
   Reach: 12
   buildables:
   - prefab: {fileID: 8333945860236782408, guid: 2bf62d86fb9c06140bd7ee962872f317, type: 3}
-    placeHolder: {fileID: 8333945860236782408, guid: 5c7a861a83da91c4db167346b1a68af8, type: 3}
+    placeHolder: {fileID: 8333945860236782408, guid: 05711a337ef7a764e9e430da15a6b8ef, type: 3}
     canPlaceOnGround: 1
   - prefab: {fileID: 8333945860236782408, guid: 0c255bf48bd34ea48b2a3bf06c54c0b6, type: 3}
     placeHolder: {fileID: 8333945860236782408, guid: 187c1f2e1e315ce4289a1c6c8a5275fa, type: 3}
     canPlaceOnGround: 1
   - prefab: {fileID: 8333945860236782408, guid: b3d207546363721478b04c5cbbd5252d, type: 3}
-    placeHolder: {fileID: 8333945860236782408, guid: 3096c3587f6e8e746b8fc163202224fa, type: 3}
+    placeHolder: {fileID: 8333945860236782408, guid: f04889ec19750eb479891078eaf42cbf, type: 3}
     canPlaceOnGround: 0
   SelectedBuildable: 0
   isColiding: 0
